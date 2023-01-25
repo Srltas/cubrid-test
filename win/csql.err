@@ -1,0 +1,45 @@
+
+Time: 01/16/23 17:02:26.660 - ERROR *** file C:\home\jenkins\workspace\cubrid_release_11.2\src\communication\network_cl.c, line 4023 ERROR CODE = -191, Tran = -1, EID = 1
+Cannot connect to server "demodb" on "localhost".
+
+Time: 01/16/23 17:02:26.661 - ERROR *** file C:\home\jenkins\workspace\cubrid_release_11.2\src\transaction\boot_cl.c, line 1783 ERROR CODE = -677, Tran = -1, EID = 2
+Failed to connect to database server, 'demodb', on the following host(s): localhost
+
+*** The previous error message is the last one. ***
+
+
+Time: 01/16/23 17:05:22.742 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_11.2\src\transaction\boot_cl.c, line 1140  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 4176) connected to database server 'demodb' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+
+
+Time: 01/16/23 18:26:16.102 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_11.2\src\transaction\boot_cl.c, line 1140  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 29032) connected to database server 'demodb' on the host 'localhost' (port 1523).
+
+Time: 01/16/23 18:47:57.246 - ERROR *** file C:\home\jenkins\workspace\cubrid_release_11.2\src\connection\connection_support.c, line 264 ERROR CODE = -671, Tran = 1, EID = 2
+A network read/write error occurred for socket 760 associated with your transaction (index 1, CUBRID@LAPTOP-G0F5RRSH|29032)
+
+Time: 01/16/23 18:47:57.246 - ERROR *** file C:\home\jenkins\workspace\cubrid_release_11.2\src\communication\network_cl.c, line 183 ERROR CODE = -199, Tran = 1, EID = 3
+Server no longer responding.
+
+Time: 01/16/23 18:47:57.247 - ERROR *** file C:\home\jenkins\workspace\cubrid_release_11.2\src\transaction\transaction_cl.c, line 592 ERROR CODE = -111, Tran = 1, EID = 4
+Your transaction has been aborted by the system due to server failure or mode change.
+
+Time: 01/16/23 18:47:57.247 - ERROR *** file C:\home\jenkins\workspace\cubrid_release_11.2\src\communication\network_cl.c, line 1006 ERROR CODE = -199, Tran = -1, EID = 5
+Server no longer responding.
+
+*** The previous error message is the last one. ***
+
+
+Time: 01/17/23 19:46:04.484 - DEBUG *** file C:\Users\CUBRID\Desktop\CUBRID\cubrid\src\transaction\boot_cl.c, line 1690
+trying to connect 'demodb@localhost'
+
+Time: 01/17/23 19:46:04.495 - DEBUG *** file C:\Users\CUBRID\Desktop\CUBRID\cubrid\src\transaction\boot_cl.c, line 1712
+ping server with handshake
+
+Time: 01/17/23 19:46:04.496 - NOTIFICATION *** file C:\Users\CUBRID\Desktop\CUBRID\cubrid\src\transaction\boot_cl.c, line 1131  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 26072) connected to database server 'demodb' on the host 'localhost' (port 1523).
+
+Time: 01/17/23 19:46:04.500 - DEBUG *** file C:\Users\CUBRID\Desktop\CUBRID\cubrid\src\transaction\boot_cl.c, line 1181
+boot_restart_client: register client { type 2 db demodb user dba password (null) program C:\CUBRID\bin\csql.exe login CUBRID host LAPTOP-G0F5RRSH pid 26072 }

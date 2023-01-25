@@ -258,6 +258,82 @@ csql_invoke_system_editor (void)
       return CSQL_FAILURE;
     }
 
+  if (csql_Edit_contents.data_size > 0)
+	{
+	  auto [filename, fileptr] = filesys::open_temp_file("sql_before_");
+	  if (fileptr == NULL)
+	  {
+		  csql_Error_code = CSQL_ERR_OS_ERROR;
+		  nonscr_display_error(csql_Scratch_text, SCRATCH_TEXT_LEN);
+		  return CSQL_FAILURE;
+	  }
+	  filesys::auto_delete_file file_del(filename.c_str());	//deletes file at scope end
+	  filesys::auto_close_file file(fileptr);	//closes file at scope end (before the above file deleter); forget about fp from now on
+
+	  /* write the content of editor to the temp file */
+	  if (csql_edit_write_file(file.get()) == CSQL_FAILURE)
+	  {
+		  nonscr_display_error(csql_Scratch_text, SCRATCH_TEXT_LEN);
+		  return CSQL_FAILURE;
+	  }
+
+	  /* invoke the system editor */
+	  char *cmd = csql_get_tmp_buf(strlen(csql_Editor_cmd + 1 + filename.size()));
+	  if (cmd == NULL)
+	  {
+		  nonscr_display_error(csql_Scratch_text, SCRATCH_TEXT_LEN);
+		  return CSQL_FAILURE;
+	  }
+	  fclose(file.release());	//on Windows needs to be closed before being able to save from Notepad
+	  sprintf(cmd, "%s %s", csql_Editor_cmd, filename.c_str()); // 파일에 씀
+
+	  // 포맷된 SQL을 저장할 파일 생성
+	  auto[after_filename, after_fileptr] = filesys::open_temp_file("sql_after_");
+	  if (after_fileptr == NULL)
+	  {
+		  csql_Error_code = CSQL_ERR_OS_ERROR;
+		  nonscr_display_error(csql_Scratch_text, SCRATCH_TEXT_LEN);
+		  return CSQL_FAILURE;
+	  }
+	  filesys::auto_delete_file file_after_del(after_filename.c_str());	//deletes file at scope end
+	  filesys::auto_close_file file_after(fileptr);	//closes file at scope end (before the above file deleter); forget about fp from now on
+
+	  fclose(file_after.release());
+
+	  // formatter 실행
+	  char csql_formatter_cmd[PATH_MAX] = "/home/cubrid/work/cubrid/build_x86_64_debug/CUBRID-11.3.0.0817-f49cb46-Linux.x86_64-debug/fsqlf/fsqlf";
+	  char *command = csql_get_tmp_buf(strlen(csql_formatter_cmd + 1 + filename.size() + 1 + after_filename.size()));
+	  sprintf(command, "%s %s %s", csql_formatter_cmd, filename.c_str(), after_filename.c_str());
+	  system(command);
+
+	  // format 된 파일을 다시 읽어서 buffer에 넣어야 함
+	  csql_edit_contents_clear();
+
+	  // before file delete
+	  file.reset(fopen(filename.c_str(), "r"));
+	  if (!file)
+	  {
+		  csql_Error_code = CSQL_ERR_OS_ERROR;
+		  nonscr_display_error(csql_Scratch_text, SCRATCH_TEXT_LEN);
+		  return CSQL_FAILURE;
+	  }
+
+	  // after file delete
+	  file_after.reset(fopen(after_filename.c_str(), "r"));
+	  if (!file_after)
+	  {
+		  csql_Error_code = CSQL_ERR_OS_ERROR;
+		  nonscr_display_error(csql_Scratch_text, SCRATCH_TEXT_LEN);
+		  return CSQL_FAILURE;
+	  }
+
+	  if (csql_edit_read_file(file_after.get()) == CSQL_FAILURE)
+	  {
+		  nonscr_display_error(csql_Scratch_text, SCRATCH_TEXT_LEN);
+		  return CSQL_FAILURE;
+	  }
+	}
+
   /* create an unique file in tmp folder and open it for writing */
   auto[filename, fileptr] = filesys::open_temp_file ("csql_");
   if (fileptr == NULL)
